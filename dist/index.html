@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  </head>
+  <body>
+    <script>
+      google.charts.load('current', {'packages':['treemap','corechart']});
+      var socket = io('http://www:4100',{'transports': ['websocket', 'polling']});
+
+      socket.on('connect', function(){ console.log('connect');  });
+      socket.on('event', function(data){ console.log('event'); });
+      socket.on('disconnect', function(){ console.log('disconnect'); });
+
+      socket.on('html', function(a){ console.log(a); result(a);  });
+
+      var dataGroup = [];
+      function result(result){
+          $('#xx').html('');
+          $('#xx').append(result.range);
+          $('#xx').append('<br><br>');
+         for(let i in result.values){
+             $('#xx').append('<br><br>');
+             $('#xx').append('Coluna:'+i+'   '+result.values[i]);
+            for(let j in result.values[i]){
+               if(isInt(result.values[i][j]))
+                  result.values[i][j] = parseInt(result.values[i][j]);
+            }
+             dataGroup[i] = result.values[i];
+         }
+         setGraph(dataGroup);
+      }
+      function Loadx(){
+          Load = document.getElementById("Load").value;
+          var tmp = {'Load':Load,'major':'ROWS'};
+          console.log('Load',tmp);
+          socket.emit("open_connect",tmp);
+      }
+      function setGraph(dataGroup){
+        console.log(dataGroup);
+        var data = google.visualization.arrayToDataTable(dataGroup);
+               tree = new google.visualization.AreaChart(document.getElementById('chart_div'));
+               tree.draw(data, {
+                 title: 'Company Performance',
+                 curveType: 'function',
+                 legend: { position: 'bottom' }
+               });
+      }
+      function isInt(value) {
+        return !isNaN(value) && (function(x) { return (x | 0) === x; })(parseFloat(value))
+      }
+    </script>
+  </body>
+  <input type="text" id="Load" name="Load" value="'Página1'!A1:D5" maxlength="128" tabindex="1">
+  <button type="button" id="Load"  onclick="Loadx()">Load!</button>
+  <div id="xx"></div>
+  <div id="chart_div" style="width: 900px; height: 500px;"></div>
+  <div id="chart_div1" style="width: 900px; height: 500px;"></div>
+</html>
