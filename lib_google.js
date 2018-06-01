@@ -22,7 +22,7 @@ class oAPI{
     setMongo(mongo=undefined){
       this.MONGO = mongo;
     }
-    async list(auth,range){
+    list(auth,range){
       this.CLASS.spreadsheets.values.get({
                   spreadsheetId: range.Plan,//'1rYqJ3orTe09ON-A6HaOXhvhuWdpo4jfPQyYWMVtq10A',
                   range: range.Load,//"A1:C2",

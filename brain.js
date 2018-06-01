@@ -1,12 +1,15 @@
 var brain = require('brain.js');
 
 class oAPI{
-    constructor(socket){
+    constructor(socket,mongo){
         this.SOCKET    = socket;
-        this.net       = new brain.NeuralNetwork();
+        this.MONGO     = mongo;
+        this.net       = new brain.NeuralNetwork({
+                              learningRate: 0.6 // global learning rate, useful when training using streams
+                            });
         //scenes=10  ,days=7
         let train = this.dataTrain(7, 7);
-        this.net.train(train);
+        this.net.trainAsync(train);
     }
     open(param){
         //train={ d1: 1, d2: 3, d3: 5, d4: 1, d5: 3, d6: 2, d7: 1 }
@@ -16,17 +19,15 @@ class oAPI{
         console.log(tmp);
         this.SOCKET.emit("train", tmp);
     }
-    add(param){
-        let train = this.dataTrain(7,7);
-        this.net.train(train);
-        return true;
-    }
     send(list){
+        let result = [];
         for(let i in list){
            list[i].score = this.net.run(list[i].list);
+           //if(list[i].score.item >= 0.8)
+            result.push(list[i]);
         }
         //console.log('list',list);
-        this.SOCKET.emit("train", list);
+        this.SOCKET.emit("train", result);
     }
     dataTrain(scenes,days){
         let sum   = 0;
@@ -53,7 +54,7 @@ class oAPI{
           }
           train.push({input: item, output: { item: 0 }});
         }
-        console.log(train);
+        //console.log('train',train);
       return train;
     }
     clear(){

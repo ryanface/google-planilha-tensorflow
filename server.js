@@ -25,7 +25,7 @@ var data = io.on('connection', function (socket) {
     console.log('Rooms:',people);
     if(people[socket.room]){
         people[socket.room][socket.id].mongo = new mongoAPI(socket);
-        people[socket.room][socket.id].brain = new brainAPI(socket);
+        people[socket.room][socket.id].brain = new brainAPI(socket,people[socket.room][socket.id].mongo);
         ryan.setMongo(people[socket.room][socket.id].mongo);
     }
     socket.on('event', function(data){ console.log('event',data); });
@@ -33,7 +33,6 @@ var data = io.on('connection', function (socket) {
            count--;
            console.log('disconnect',count);
            people[socket.room][socket.id].mongo.closeConnection()
-           people[socket.room][socket.id].brain = {};
            delete people[socket.room][socket.id];
            socket.leave('room');
     });
@@ -49,14 +48,13 @@ var data = io.on('connection', function (socket) {
            console.log('socket_save');
            people[socket.room][socket.id].mongo.save(a);
     });
+    socket.on('proc', function(){
+           console.log('socket_proc');
+           people[socket.room][socket.id].mongo.process();
+    });
     socket.on('net', function(a){
            console.log('socket_net');
            people[socket.room][socket.id].brain.open(a);
-    });
-    socket.on('add', function(a){
-           console.log('socket_add');
-           people[socket.room][socket.id].brain.add(a);
-           socket.emit("add", "Base duplicada");
     });
     socket.on('send', function(a){
            console.log('socket_send');
