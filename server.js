@@ -1,4 +1,3 @@
-var ipaddress = '192.168.100.9';
 var port      = 4100;
 var count     = 0;
 
