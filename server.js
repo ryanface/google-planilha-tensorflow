@@ -2,9 +2,9 @@ var ipaddress = '192.168.100.9';
 var port      = 4100;
 var count     = 0;
 
-var ryan      = require( './lib_google' );
-var mongoAPI  = require( './lib_mongo' );
-var brainAPI  = require( './brain' );
+var ryan      = require( './lib/lib_google' );
+var mongoAPI  = require( './lib/lib_mongo' );
+var brainAPI  = require( './lib/lib_brain' );
 
 var people        = {};
 var createRoom = function(room){
