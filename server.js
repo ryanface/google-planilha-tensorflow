@@ -44,20 +44,24 @@ var data = io.on('connection', function (socket) {
            console.log('socket_open_connect');
            ryan.open_connect(socket,people[socket.room][socket.id].mongo,a);
     });
-    socket.on('save', function(a){
+    socket.on('save_plan', function(a){
            console.log('socket_save');
            people[socket.room][socket.id].mongo.save(a);
     });
-    socket.on('proc', function(){
+    socket.on('proc', function(list){
            console.log('socket_proc');
-           people[socket.room][socket.id].mongo.process();
+           people[socket.room][socket.id].mongo.process(list);
     });
-    socket.on('net', function(a){
-           console.log('socket_net');
-           people[socket.room][socket.id].brain.open(a);
-    });
-    socket.on('send', function(a){
+    socket.on('send', function(){
            console.log('socket_send');
-           people[socket.room][socket.id].brain.send(a);
+           people[socket.room][socket.id].brain.send();
+    });
+    socket.on('getScores', function(){
+           console.log('socket_getScores');
+           people[socket.room][socket.id].mongo.getScores();
+    });
+    socket.on('getCasos', function(){
+           console.log('socket_getCasos');
+           people[socket.room][socket.id].mongo.getCasos();
     });
 });
