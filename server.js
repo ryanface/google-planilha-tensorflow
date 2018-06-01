@@ -56,9 +56,13 @@ var data = io.on('connection', function (socket) {
            console.log('socket_send');
            people[socket.room][socket.id].brain.send();
     });
-    socket.on('getScores', function(){
+    socket.on('exam', function(a){
+           console.log('socket_send');
+           people[socket.room][socket.id].brain.exam(a);
+    });
+    socket.on('getScores', function(filter={'datatime':1}){
            console.log('socket_getScores');
-           people[socket.room][socket.id].mongo.getScores();
+           people[socket.room][socket.id].mongo.getScores(filter);
     });
     socket.on('getCasos', function(){
            console.log('socket_getCasos');
