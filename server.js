@@ -31,7 +31,7 @@ var data = io.on('connection', function (socket) {
     socket.on('disconnect', function(){
            count--;
            console.log('disconnect',count);
-           people[socket.room][socket.id].mongo.closeConnection()
+           people[socket.room][socket.id].mongo.closeConnection();
            delete people[socket.room][socket.id];
            socket.leave('room');
     });
@@ -51,17 +51,21 @@ var data = io.on('connection', function (socket) {
            console.log('socket_proc');
            people[socket.room][socket.id].mongo.process(list);
     });
-    socket.on('send', function(){
+    socket.on('send', function(doenca){
            console.log('socket_send');
-           people[socket.room][socket.id].brain.send();
+           people[socket.room][socket.id].brain.send(doenca);
     });
     socket.on('exam', function(a){
            console.log('socket_send');
            people[socket.room][socket.id].brain.exam(a);
     });
-    socket.on('getScores', function(filter={'datatime':1}){
+    socket.on('getScores', function(disease='',filter={'datatime':1}){
            console.log('socket_getScores');
-           people[socket.room][socket.id].mongo.getScores(filter);
+           people[socket.room][socket.id].mongo.getScores(disease,filter);
+    });
+    socket.on('getDiseases', function(){
+           console.log('socket_getDiseases');
+           people[socket.room][socket.id].mongo.getDiseases();
     });
     socket.on('getCasos', function(){
            console.log('socket_getCasos');
