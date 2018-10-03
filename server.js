@@ -3,7 +3,7 @@ var count     = 0;
 
 var ryan      = require( './lib/lib_google' );
 var mongoAPI  = require( './lib/lib_mongo' );
-var brainAPI  = require( './lib/lib_brain' );
+var tensorAPI  = require( './lib/lib_tensor' );
 
 var people        = {};
 var createRoom = function(room){
@@ -24,7 +24,7 @@ var data = io.on('connection', function (socket) {
     console.log('Rooms:',people);
     if(people[socket.room]){
         people[socket.room][socket.id].mongo = new mongoAPI(socket);
-        people[socket.room][socket.id].brain = new brainAPI(socket,people[socket.room][socket.id].mongo);
+        people[socket.room][socket.id].tensor = new tensorAPI(socket,people[socket.room][socket.id].mongo);
         ryan.setMongo(people[socket.room][socket.id].mongo);
     }
     socket.on('event', function(data){ console.log('event',data); });
@@ -53,11 +53,11 @@ var data = io.on('connection', function (socket) {
     });
     socket.on('send', function(doenca){
            console.log('socket_send');
-           people[socket.room][socket.id].brain.send(doenca);
+           people[socket.room][socket.id].tensor.send(doenca);
     });
     socket.on('exam', function(a){
            console.log('socket_send');
-           people[socket.room][socket.id].brain.exam(a);
+           people[socket.room][socket.id].tensor.exam(a);
     });
     socket.on('getScores', function(disease='',filter={'datatime':1}){
            console.log('socket_getScores');
