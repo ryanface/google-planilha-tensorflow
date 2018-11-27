@@ -59,7 +59,7 @@ var data = io.on('connection', function (socket) {
            console.log('socket_send');
            people[socket.room][socket.id].tensor.exam(a);
     });
-    socket.on('getScores', function(disease='',filter={'datatime':1}){
+    socket.on('getScores', function(disease={},filter={'datatime':1}){
            console.log('socket_getScores');
            people[socket.room][socket.id].mongo.getScores(disease,filter);
     });
